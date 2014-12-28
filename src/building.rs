@@ -51,7 +51,7 @@ impl UriTemplateComponentBuilder {
 
 #[cfg(test)]
 mod test {
-    use super::UriTemplateBuilder;
+    use super::super::UriTemplateBuilder;
     use super::super::{UriTemplateOperator, UriTemplateModifier};
 
     #[test]
@@ -96,9 +96,11 @@ mod test {
                  .variable("bar", None)
                  .variable("hash", Some(UriTemplateModifier::Prefix(7)))
             })
-            .into_uri_template()
-            .into_template_string();
+            .into_uri_template();
+        let s1 = t.to_template_string();
+        let s2 = t.into_template_string();
 
-        assert_eq!(t, "http://example.com/{/splat*}{?foo,bar,hash:7}");
+        assert_eq!(s1, "http://example.com/{/splat*}{?foo,bar,hash:7}");
+        assert_eq!(s1, s2);
     }
 }

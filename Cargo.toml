@@ -2,3 +2,7 @@
 name = "uri-templates"
 version = "0.0.1"
 authors = ["Scott Talbot <s@chikachow.org>"]
+
+#[dependencies.url]
+#git = "https://github.com/servo/rust-url"
+#features = ["query_encoding"]
