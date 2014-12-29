@@ -1,4 +1,5 @@
+pub use types::{UriTemplate, UriTemplateOperator, UriTemplateModifier};
 pub use building::{UriTemplateBuilder, UriTemplateComponentBuilder};
-pub use building::{UriTemplateOperator, UriTemplateModifier};
 
 mod building;
+mod types;
