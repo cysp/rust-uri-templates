@@ -43,7 +43,12 @@ pub struct UriTemplateComponentBuilder {
 
 impl UriTemplateComponentBuilder {
     pub fn variable(mut self, name: &str, modifier: Option<UriTemplateModifier>) -> UriTemplateComponentBuilder {
-        self.variables.push(UriTemplateVariable::new(name, modifier));
+        self.variables.push(match modifier {
+            None => UriTemplateVariable::Simple(name.to_string()),
+            Some(UriTemplateModifier::Prefix(prefix)) => UriTemplateVariable::Prefix(name.to_string(), prefix),
+            Some(UriTemplateModifier::Explode) => UriTemplateVariable::Explode(name.to_string()),
+            Some(UriTemplateModifier::ExplodePrefix(prefix)) => UriTemplateVariable::ExplodePrefix(name.to_string(), prefix)
+        });
         self
     }
 }
@@ -101,6 +106,6 @@ mod test {
         let s2 = t.into_template_string();
 
         assert_eq!(s1, "http://example.com/{/splat*}{?foo,bar,hash:7}");
-        assert_eq!(s1, s2);
+        assert_eq!(s1, "http://example.com/{/splat*}{?foo,bar,hash:7}");
     }
 }
