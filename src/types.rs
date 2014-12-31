@@ -97,14 +97,14 @@ fn escape_string(method: UriTemplateEscaping, input: &str) -> String {
                 if set_u.contains(&(*byte as uint)) {
                     s.push(*byte as char);
                 } else {
-                    s.push_str(format!("%{:2x}", *byte).as_slice())
+                    s.push_str(format!("%{:02X}", *byte).as_slice())
                 }
             }
             UriTemplateEscaping::UR => {
                 if set_ur.contains(&(*byte as uint)) {
                     s.push(*byte as char);
                 } else {
-                    s.push_str(format!("%{:2x}", *byte).as_slice())
+                    s.push_str(format!("%{:02X}", *byte).as_slice())
                 }
             }
         }
