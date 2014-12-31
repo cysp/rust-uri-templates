@@ -2,7 +2,7 @@ extern crate uritemplates;
 
 use uritemplates::UriTemplateBuilder;
 use uritemplates::{UriTemplateOperator, UriTemplateModifier};
-use uritemplates::{UriTemplateValues, UriTemplateValue};
+use uritemplates::{UriTemplateValues};
 
 
 #[test]

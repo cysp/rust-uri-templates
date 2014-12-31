@@ -106,6 +106,6 @@ mod test {
         let s2 = t.into_template_string();
 
         assert_eq!(s1, "http://example.com/{/splat*}{?foo,bar,hash:7}");
-        assert_eq!(s1, "http://example.com/{/splat*}{?foo,bar,hash:7}");
+        assert_eq!(s1, s2);
     }
 }

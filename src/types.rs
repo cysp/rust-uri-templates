@@ -1,11 +1,8 @@
 extern crate std;
-extern crate url;
 
 use std::vec::Vec;
 use std::collections::BitvSet;
 use std::collections::HashMap;
-
-// use url::percent_encoding;
 
 
 #[deriving(Copy)]
@@ -110,17 +107,6 @@ fn escape_string(method: UriTemplateEscaping, input: &str) -> String {
         }
     }
     s
-    // let encode_set = match op {
-    //     None => url::percent_encoding::DEFAULT_ENCODE_SET,
-    //     Some(UriTemplateOperator::ReservedCharacter) => url::percent_encoding::SIMPLE_ENCODE_SET,
-    //     Some(UriTemplateOperator::Fragment) => url::percent_encoding::DEFAULT_ENCODE_SET,
-    //     Some(UriTemplateOperator::PathExtension) => url::percent_encoding::DEFAULT_ENCODE_SET,
-    //     Some(UriTemplateOperator::PathComponent) => url::percent_encoding::DEFAULT_ENCODE_SET,
-    //     Some(UriTemplateOperator::PathParameter) => url::percent_encoding::DEFAULT_ENCODE_SET,
-    //     Some(UriTemplateOperator::QueryParameter) => url::percent_encoding::QUERY_ENCODE_SET,
-    //     Some(UriTemplateOperator::QueryContinuation) => url::percent_encoding::QUERY_ENCODE_SET,
-    // };
-    // url::percent_encoding::percent_encode(s.as_bytes(), encode_set)
 }
 
 impl UriTemplateComponent {
@@ -233,8 +219,12 @@ impl UriTemplateComponent {
                             strings.connect(separator)
                         }
                         &UriTemplateVariable::ExplodePrefix(ref name, prefix_len) => {
-                            panic!("unimplemented");
-                            "".to_string()
+                            let strings: Vec<String> = values.strings_for_name(name).into_iter().map(|s| {
+                                let strings: Vec<String> = s.as_slice().graphemes(true).take(prefix_len as uint).map(|s| s.to_string()).collect();
+                                strings.concat()
+                            }).collect();
+                            let strings: Vec<String> = strings.into_iter().map(|s| escape_string(escaping, s.as_slice())).collect();
+                            strings.connect(separator)
                         }
                     }
                 }).collect();
@@ -297,16 +287,6 @@ impl UriTemplate {
         ).collect();
         components.concat()
     }
-
-    // pub fn to_url(&self) -> Option<url::Url> {
-    //     let mut s = String::new();
-    //     for component in self.components.iter() {
-    //         match component {
-    //             &UriTemplateComponent::Literal(literal) => s.push_str(literal),
-    //             _ => (),
-    //         }
-    //     }
-    // }
 }
 
 impl std::fmt::Show for UriTemplate {
@@ -366,21 +346,19 @@ impl UriTemplateValues {
 
 #[cfg(test)]
 mod test_values {
-    use super::{UriTemplateValues, UriTemplateValue};
+    use super::{UriTemplateValues};
 
     #[test]
     fn test_values_1() {
         let mut v = UriTemplateValues::new();
-        v.set("foo", from_str("bar").unwrap());
+        v.set("foo", "bar".parse().unwrap());
         v.set_string("foo", "baz");
     }
 }
 
 #[cfg(test)]
 mod test_expanding {
-    use super::super::UriTemplateBuilder;
-    use super::super::{UriTemplateOperator, UriTemplateModifier};
-    use super::super::{UriTemplateValues, UriTemplateValue};
+    use super::super::{UriTemplateBuilder, UriTemplateValues};
 
     #[test]
     fn test_level_1_1() {
@@ -389,7 +367,7 @@ mod test_expanding {
         .component(None, |c| c.variable("foo", None))
         .into_uri_template();
 
-        let mut v = UriTemplateValues::new();
+        let v = UriTemplateValues::new();
 
         let s = t.to_template_string();
         assert_eq!(s, "http://example.com/{foo}");
