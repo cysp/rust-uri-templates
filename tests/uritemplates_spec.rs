@@ -250,7 +250,7 @@ fn test_level_3_j() {
 
 #[test]
 fn test_level_3_k() {
-    // let v = test_level_3_values();
+    let v = test_level_3_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::PathParameter), |c|
@@ -259,12 +259,12 @@ fn test_level_3_k() {
         )
         .into_uri_template();
     assert_eq!(t.to_template_string(), "{;x,y}");
-    // assert_eq!(t.to_string_with_values(&v), ";x=1024;y=768");
+    assert_eq!(t.to_string_with_values(&v), ";x=1024;y=768");
 }
 
 #[test]
 fn test_level_3_l() {
-    // let v = test_level_3_values();
+    let v = test_level_3_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::PathParameter), |c|
@@ -274,12 +274,12 @@ fn test_level_3_l() {
         )
         .into_uri_template();
     assert_eq!(t.to_template_string(), "{;x,y,empty}");
-    // assert_eq!(t.to_string_with_values(&v), ";x=1024;y=768;empty");
+    assert_eq!(t.to_string_with_values(&v), ";x=1024;y=768;empty");
 }
 
 #[test]
 fn test_level_3_m() {
-    // let v = test_level_3_values();
+    let v = test_level_3_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryParameter), |c|
@@ -288,12 +288,12 @@ fn test_level_3_m() {
         )
         .into_uri_template();
     assert_eq!(t.to_template_string(), "{?x,y}");
-    // assert_eq!(t.to_string_with_values(&v), "?x=1024&y=768");
+    assert_eq!(t.to_string_with_values(&v), "?x=1024&y=768");
 }
 
 #[test]
 fn test_level_3_n() {
-    // let v = test_level_3_values();
+    let v = test_level_3_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryParameter), |c|
@@ -303,12 +303,12 @@ fn test_level_3_n() {
         )
         .into_uri_template();
     assert_eq!(t.to_template_string(), "{?x,y,empty}");
-    // assert_eq!(t.to_string_with_values(&v), "?x=1024&y=768&empty=");
+    assert_eq!(t.to_string_with_values(&v), "?x=1024&y=768&empty=");
 }
 
 #[test]
 fn test_level_3_o() {
-    // let v = test_level_3_values();
+    let v = test_level_3_values();
 
     let t = UriTemplateBuilder::new()
         .literal("?fixed=yes")
@@ -317,12 +317,12 @@ fn test_level_3_o() {
         )
         .into_uri_template();
     assert_eq!(t.to_template_string(), "?fixed=yes{&x}");
-    // assert_eq!(t.to_string_with_values(&v), "?fixed=yes&x=1024");
+    assert_eq!(t.to_string_with_values(&v), "?fixed=yes&x=1024");
 }
 
 #[test]
 fn test_level_3_p() {
-    // let v = test_level_3_values();
+    let v = test_level_3_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryContinuation), |c|
@@ -332,7 +332,7 @@ fn test_level_3_p() {
         )
         .into_uri_template();
     assert_eq!(t.to_template_string(), "{&x,y,empty}");
-    // assert_eq!(t.to_string_with_values(&v), "?x=1024&y=768&empty=");
+    assert_eq!(t.to_string_with_values(&v), "&x=1024&y=768&empty=");
 }
 
 
@@ -697,7 +697,7 @@ fn test_level_4_aa() {
 
 #[test]
 fn test_level_4_ab() {
-    // let v = test_level_4_values();
+    let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::PathParameter), |c|
@@ -705,12 +705,12 @@ fn test_level_4_ab() {
         )
         .into_uri_template();
     assert_eq!(t.to_template_string(), "{;hello:5}");
-    // assert_eq!(t.to_string_with_values(&v), ";hello=Hello");
+    assert_eq!(t.to_string_with_values(&v), ";hello=Hello");
 }
 
 #[test]
 fn test_level_4_ac() {
-    // let v = test_level_4_values();
+    let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::PathParameter), |c|
@@ -718,12 +718,12 @@ fn test_level_4_ac() {
         )
         .into_uri_template();
     assert_eq!(t.to_template_string(), "{;list}");
-    // assert_eq!(t.to_string_with_values(&v), ";list=red,green,blue");
+    assert_eq!(t.to_string_with_values(&v), ";list=red,green,blue");
 }
 
 #[test]
 fn test_level_4_ad() {
-    // let v = test_level_4_values();
+    let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::PathParameter), |c|
@@ -731,7 +731,7 @@ fn test_level_4_ad() {
         )
         .into_uri_template();
     assert_eq!(t.to_template_string(), "{;list*}");
-    // assert_eq!(t.to_string_with_values(&v), ";list=red;list=green;list=blue");
+    assert_eq!(t.to_string_with_values(&v), ";list=red;list=green;list=blue");
 }
 
 #[test]
@@ -762,7 +762,7 @@ fn test_level_4_af() {
 
 #[test]
 fn test_level_4_ag() {
-    // let v = test_level_4_values();
+    let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryParameter), |c|
@@ -770,12 +770,12 @@ fn test_level_4_ag() {
         )
         .into_uri_template();
     assert_eq!(t.to_template_string(), "{?var:3}");
-    // assert_eq!(t.to_string_with_values(&v), "?var=val");
+    assert_eq!(t.to_string_with_values(&v), "?var=val");
 }
 
 #[test]
 fn test_level_4_ah() {
-    // let v = test_level_4_values();
+    let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryParameter), |c|
@@ -783,12 +783,12 @@ fn test_level_4_ah() {
         )
         .into_uri_template();
     assert_eq!(t.to_template_string(), "{?list}");
-    // assert_eq!(t.to_string_with_values(&v), "?list=red,green,blue");
+    assert_eq!(t.to_string_with_values(&v), "?list=red,green,blue");
 }
 
 #[test]
 fn test_level_4_ai() {
-    // let v = test_level_4_values();
+    let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryParameter), |c|
@@ -796,7 +796,7 @@ fn test_level_4_ai() {
         )
         .into_uri_template();
     assert_eq!(t.to_template_string(), "{?list*}");
-    // assert_eq!(t.to_string_with_values(&v), "?list=red&list=green&list=blue");
+    assert_eq!(t.to_string_with_values(&v), "?list=red&list=green&list=blue");
 }
 
 #[test]
@@ -827,7 +827,7 @@ fn test_level_4_ak() {
 
 #[test]
 fn test_level_4_al() {
-    // let v = test_level_4_values();
+    let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryContinuation), |c|
@@ -835,12 +835,12 @@ fn test_level_4_al() {
         )
         .into_uri_template();
     assert_eq!(t.to_template_string(), "{&var:3}");
-    // assert_eq!(t.to_string_with_values(&v), "&var=val");
+    assert_eq!(t.to_string_with_values(&v), "&var=val");
 }
 
 #[test]
 fn test_level_4_am() {
-    // let v = test_level_4_values();
+    let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryContinuation), |c|
@@ -848,12 +848,12 @@ fn test_level_4_am() {
         )
         .into_uri_template();
     assert_eq!(t.to_template_string(), "{&list}");
-    // assert_eq!(t.to_string_with_values(&v), "&list=red,green,blue");
+    assert_eq!(t.to_string_with_values(&v), "&list=red,green,blue");
 }
 
 #[test]
 fn test_level_4_an() {
-    // let v = test_level_4_values();
+    let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryContinuation), |c|
@@ -861,7 +861,7 @@ fn test_level_4_an() {
         )
         .into_uri_template();
     assert_eq!(t.to_template_string(), "{&list*}");
-    // assert_eq!(t.to_string_with_values(&v), "&list=red&list=green&list=blue");
+    assert_eq!(t.to_string_with_values(&v), "&list=red&list=green&list=blue");
 }
 
 #[test]

@@ -152,6 +152,25 @@ impl UriTemplateComponent {
         }
     }
 
+    fn strings_apply_prefix(strings: Vec<String>, prefix_len: u32) -> Vec<String> {
+        if strings.len() == 0 {
+            return strings;
+        }
+        strings.into_iter().map(|s| {
+            let strings: Vec<String> = s.as_slice().graphemes(true).take(prefix_len as uint).map(|s| s.to_string()).collect();
+            strings.concat()
+        }).collect()
+    }
+
+    fn strings_apply_escaping(strings: Vec<String>, escaping: UriTemplateEscaping) -> Vec<String> {
+        if strings.len() == 0 {
+            return strings;
+        }
+        strings.into_iter().map(|s|
+            escape_string(escaping, s.as_slice())
+        ).collect()
+    }
+
     pub fn to_string_with_values(&self, values: &UriTemplateValues) -> String {
         match self {
             &UriTemplateComponent::Literal(ref value) => escape_string(UriTemplateEscaping::UR, value.as_slice()),
@@ -192,58 +211,92 @@ impl UriTemplateComponent {
                     }
                 ).unwrap_or(UriTemplateEscaping::U);
 
+                let include_name: bool = operator.map(|o|
+                    match o {
+                        UriTemplateOperator::ReservedCharacter => false,
+                        UriTemplateOperator::Fragment => false,
+                        UriTemplateOperator::PathExtension => false,
+                        UriTemplateOperator::PathComponent => false,
+                        UriTemplateOperator::PathParameter => true,
+                        UriTemplateOperator::QueryParameter => true,
+                        UriTemplateOperator::QueryContinuation => true,
+                    }
+                ).unwrap_or(false);
+
+                let include_equals_when_empty: bool = operator.map(|o|
+                    match o {
+                        UriTemplateOperator::ReservedCharacter => false,
+                        UriTemplateOperator::Fragment => false,
+                        UriTemplateOperator::PathExtension => false,
+                        UriTemplateOperator::PathComponent => false,
+                        UriTemplateOperator::PathParameter => false,
+                        UriTemplateOperator::QueryParameter => true,
+                        UriTemplateOperator::QueryContinuation => true,
+                    }
+                ).unwrap_or(false);
+
                 let values: Vec<String> = variables.iter().filter_map(|v| {
-                    match v {
+                    let values: Vec<String> = match v {
                         &UriTemplateVariable::Simple(ref name) => {
                             let strings: Vec<String> = values.strings_for_name(name);
-                            let strings: Vec<String> = strings.into_iter().map(|s| escape_string(escaping, s.as_slice())).collect();
-                            if strings.len() > 0 {
-                                Some(strings)
-                            } else {
-                                None
-                            }
+                            UriTemplateComponent::strings_apply_escaping(strings, escaping)
                         }
                         &UriTemplateVariable::Prefix(ref name, prefix_len) => {
-                            let strings: Vec<String> = values.strings_for_name(name).into_iter().map(|s| {
-                                let strings: Vec<String> = s.as_slice().graphemes(true).take(prefix_len as uint).map(|s| s.to_string()).collect();
-                                strings.concat()
-                            }).collect();
-                            let strings: Vec<String> = strings.into_iter().map(|s| escape_string(escaping, s.as_slice())).collect();
-                            if strings.len() > 0 {
-                                Some(strings)
-                            } else {
-                                None
-                            }
+                            let strings: Vec<String> = UriTemplateComponent::strings_apply_prefix(values.strings_for_name(name), prefix_len);
+                            UriTemplateComponent::strings_apply_escaping(strings, escaping)
                         }
                         &UriTemplateVariable::Explode(ref name) => {
                             let strings: Vec<String> = values.strings_for_name(name);
-                            let strings: Vec<String> = strings.into_iter().map(|s| escape_string(escaping, s.as_slice())).collect();
-                            if strings.len() > 0 {
-                                Some(strings)
-                            } else {
-                                None
-                            }
+                            UriTemplateComponent::strings_apply_escaping(strings, escaping)
                         }
                         &UriTemplateVariable::ExplodePrefix(ref name, prefix_len) => {
-                            let strings: Vec<String> = values.strings_for_name(name).into_iter().map(|s| {
-                                let strings: Vec<String> = s.as_slice().graphemes(true).take(prefix_len as uint).map(|s| s.to_string()).collect();
-                                strings.concat()
-                            }).collect();
-                            let strings: Vec<String> = strings.into_iter().map(|s| escape_string(escaping, s.as_slice())).collect();
-                            if strings.len() > 0 {
-                                Some(strings)
-                            } else {
-                                None
+                            let strings: Vec<String> = UriTemplateComponent::strings_apply_prefix(values.strings_for_name(name), prefix_len);
+                            UriTemplateComponent::strings_apply_escaping(strings, escaping)
+                        }
+                    };
+                    if values.len() == 0 {
+                        return None;
+                    }
+                    Some(match v {
+                        &UriTemplateVariable::Simple(ref name) => {
+                            let mut value = values.connect(",");
+                            if include_name {
+                                if value.len() != 0 || include_equals_when_empty {
+                                    value = format!("{}={}", name, value);
+                                } else {
+                                    value = name.clone();
+                                }
                             }
-                        }
-                    }.map(|strings|
-                        match v {
-                            &UriTemplateVariable::Simple(_) => strings.connect(","),
-                            &UriTemplateVariable::Prefix(_, _) => strings.connect(","),
-                            &UriTemplateVariable::Explode(_) => strings.connect(separator),
-                            &UriTemplateVariable::ExplodePrefix(_, _) => strings.connect(separator),
-                        }
-                    )
+                            value
+                        },
+                        &UriTemplateVariable::Prefix(ref name, _) => {
+                            let mut value = values.connect(",");
+                            if include_name {
+                                if value.len() != 0 || include_equals_when_empty {
+                                    value = format!("{}={}", name, value);
+                                } else {
+                                    value = name.clone();
+                                }
+                            }
+                            value
+                        },
+                        &UriTemplateVariable::Explode(ref name) => {
+                            if include_name {
+                                let strings: Vec<String> = values.into_iter().map(|s| { format!("{}={}", name, s) }).collect();
+                                strings.connect(separator)
+                            } else {
+                                values.connect(separator)
+                            }
+                        },
+                        &UriTemplateVariable::ExplodePrefix(ref name, _) => {
+                            if include_name {
+                                let strings: Vec<String> = values.into_iter().map(|s| { format!("{}={}", name, s) }).collect();
+                                strings.connect(separator)
+                            } else {
+                                values.connect(separator)
+                            }
+                        },
+                    })
                 }).collect();
 
                 if values.len() == 0 {

@@ -79,7 +79,7 @@ fn test_3_2_1_variable_expansion_e() {
         .component(Some(UriTemplateOperator::PathParameter), |c| c.variable("count", None))
         .into_uri_template();
     assert_eq!(t.to_template_string(), "{;count}");
-    // assert_eq!(t.to_string_with_values(&v), ";count=one,two,three");
+    assert_eq!(t.to_string_with_values(&v), ";count=one,two,three");
 }
 
 #[test]
@@ -90,7 +90,7 @@ fn test_3_2_1_variable_expansion_f() {
         .component(Some(UriTemplateOperator::PathParameter), |c| c.variable("count", Some(UriTemplateModifier::Explode)))
         .into_uri_template();
     assert_eq!(t.to_template_string(), "{;count*}");
-    // assert_eq!(t.to_string_with_values(&v), ";count=one;count=two;count=three");
+    assert_eq!(t.to_string_with_values(&v), ";count=one;count=two;count=three");
 }
 
 #[test]
@@ -101,7 +101,7 @@ fn test_3_2_1_variable_expansion_g() {
         .component(Some(UriTemplateOperator::QueryParameter), |c| c.variable("count", None))
         .into_uri_template();
     assert_eq!(t.to_template_string(), "{?count}");
-    // assert_eq!(t.to_string_with_values(&v), "?count=one,two,three");
+    assert_eq!(t.to_string_with_values(&v), "?count=one,two,three");
 }
 
 #[test]
@@ -112,7 +112,7 @@ fn test_3_2_1_variable_expansion_h() {
         .component(Some(UriTemplateOperator::QueryParameter), |c| c.variable("count", Some(UriTemplateModifier::Explode)))
         .into_uri_template();
     assert_eq!(t.to_template_string(), "{?count*}");
-    // assert_eq!(t.to_string_with_values(&v), "?count=one&count=two&count=three");
+    assert_eq!(t.to_string_with_values(&v), "?count=one&count=two&count=three");
 }
 
 #[test]
@@ -123,7 +123,7 @@ fn test_3_2_1_variable_expansion_i() {
         .component(Some(UriTemplateOperator::QueryContinuation), |c| c.variable("count", Some(UriTemplateModifier::Explode)))
         .into_uri_template();
     assert_eq!(t.to_template_string(), "{&count*}");
-    // assert_eq!(t.to_string_with_values(&v), "&count=one&count=two&count=three");
+    assert_eq!(t.to_string_with_values(&v), "&count=one&count=two&count=three");
 }
 
 
