@@ -250,7 +250,7 @@ fn test_level_3_j() {
 
 #[test]
 fn test_level_3_k() {
-    let v = test_level_3_values();
+    // let v = test_level_3_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::PathParameter), |c|
@@ -264,7 +264,7 @@ fn test_level_3_k() {
 
 #[test]
 fn test_level_3_l() {
-    let v = test_level_3_values();
+    // let v = test_level_3_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::PathParameter), |c|
@@ -279,7 +279,7 @@ fn test_level_3_l() {
 
 #[test]
 fn test_level_3_m() {
-    let v = test_level_3_values();
+    // let v = test_level_3_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryParameter), |c|
@@ -293,7 +293,7 @@ fn test_level_3_m() {
 
 #[test]
 fn test_level_3_n() {
-    let v = test_level_3_values();
+    // let v = test_level_3_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryParameter), |c|
@@ -308,7 +308,7 @@ fn test_level_3_n() {
 
 #[test]
 fn test_level_3_o() {
-    let v = test_level_3_values();
+    // let v = test_level_3_values();
 
     let t = UriTemplateBuilder::new()
         .literal("?fixed=yes")
@@ -322,7 +322,7 @@ fn test_level_3_o() {
 
 #[test]
 fn test_level_3_p() {
-    let v = test_level_3_values();
+    // let v = test_level_3_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryContinuation), |c|
@@ -403,7 +403,7 @@ fn test_level_4_d() {
 
 #[test]
 fn test_level_4_e() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(None, |c|
@@ -416,7 +416,7 @@ fn test_level_4_e() {
 
 #[test]
 fn test_level_4_f() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(None, |c|
@@ -469,26 +469,26 @@ fn test_level_4_i() {
 
 #[test]
 fn test_level_4_j() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
-    .component(Some(UriTemplateOperator::ReservedCharacter), |c|
-    c.variable("keys", None)
-    )
-    .into_uri_template();
+        .component(Some(UriTemplateOperator::ReservedCharacter), |c|
+            c.variable("keys", None)
+        )
+        .into_uri_template();
     assert_eq!(t.to_template_string(), "{+keys}");
     // assert_eq!(t.to_string_with_values(&v), "comma,,,dot,.,semi,;");
 }
 
 #[test]
 fn test_level_4_k() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
-    .component(Some(UriTemplateOperator::ReservedCharacter), |c|
-    c.variable("keys", Some(UriTemplateModifier::Explode))
-    )
-    .into_uri_template();
+        .component(Some(UriTemplateOperator::ReservedCharacter), |c|
+            c.variable("keys", Some(UriTemplateModifier::Explode))
+        )
+        .into_uri_template();
     assert_eq!(t.to_template_string(), "{+keys*}");
     // assert_eq!(t.to_string_with_values(&v), "comma=,,dot=.,semi=;");
 }
@@ -535,7 +535,7 @@ fn test_level_4_n() {
 
 #[test]
 fn test_level_4_p() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::Fragment), |c|
@@ -548,7 +548,7 @@ fn test_level_4_p() {
 
 #[test]
 fn test_level_4_q() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::Fragment), |c|
@@ -603,7 +603,7 @@ fn test_level_4_t() {
 
 #[test]
 fn test_level_4_u() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .literal("X")
@@ -671,7 +671,7 @@ fn test_level_4_y() {
 
 #[test]
 fn test_level_4_z() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::PathComponent), |c|
@@ -684,7 +684,7 @@ fn test_level_4_z() {
 
 #[test]
 fn test_level_4_aa() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::PathComponent), |c|
@@ -697,7 +697,7 @@ fn test_level_4_aa() {
 
 #[test]
 fn test_level_4_ab() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::PathParameter), |c|
@@ -710,7 +710,7 @@ fn test_level_4_ab() {
 
 #[test]
 fn test_level_4_ac() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::PathParameter), |c|
@@ -723,7 +723,7 @@ fn test_level_4_ac() {
 
 #[test]
 fn test_level_4_ad() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::PathParameter), |c|
@@ -736,7 +736,7 @@ fn test_level_4_ad() {
 
 #[test]
 fn test_level_4_ae() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::PathParameter), |c|
@@ -749,7 +749,7 @@ fn test_level_4_ae() {
 
 #[test]
 fn test_level_4_af() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::PathParameter), |c|
@@ -762,7 +762,7 @@ fn test_level_4_af() {
 
 #[test]
 fn test_level_4_ag() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryParameter), |c|
@@ -775,7 +775,7 @@ fn test_level_4_ag() {
 
 #[test]
 fn test_level_4_ah() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryParameter), |c|
@@ -788,7 +788,7 @@ fn test_level_4_ah() {
 
 #[test]
 fn test_level_4_ai() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryParameter), |c|
@@ -801,7 +801,7 @@ fn test_level_4_ai() {
 
 #[test]
 fn test_level_4_aj() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryParameter), |c|
@@ -814,7 +814,7 @@ fn test_level_4_aj() {
 
 #[test]
 fn test_level_4_ak() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryParameter), |c|
@@ -827,7 +827,7 @@ fn test_level_4_ak() {
 
 #[test]
 fn test_level_4_al() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryContinuation), |c|
@@ -840,7 +840,7 @@ fn test_level_4_al() {
 
 #[test]
 fn test_level_4_am() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryContinuation), |c|
@@ -853,7 +853,7 @@ fn test_level_4_am() {
 
 #[test]
 fn test_level_4_an() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryContinuation), |c|
@@ -866,7 +866,7 @@ fn test_level_4_an() {
 
 #[test]
 fn test_level_4_ao() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryContinuation), |c|
@@ -879,7 +879,7 @@ fn test_level_4_ao() {
 
 #[test]
 fn test_level_4_ap() {
-    let v = test_level_4_values();
+    // let v = test_level_4_values();
 
     let t = UriTemplateBuilder::new()
         .component(Some(UriTemplateOperator::QueryContinuation), |c|

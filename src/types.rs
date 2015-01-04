@@ -66,12 +66,6 @@ enum UriTemplateEscaping {
 
 
 fn escape_string(method: UriTemplateEscaping, input: &str) -> String {
-    // unreserved     =  ALPHA / DIGIT / "-" / "." / "_" / "~"
-    // reserved       =  gen-delims / sub-delims
-    // gen-delims     =  ":" / "/" / "?" / "#" / "[" / "]" / "@"
-    // sub-delims     =  "!" / "$" / "&" / "'" / "(" / ")"
-    // /  "*" / "+" / "," / ";" / "=" / "%"
-
     let str_u = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~";
     let str_ur = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~:/?#[]@!$&'()*+,;=%";
 
@@ -198,12 +192,16 @@ impl UriTemplateComponent {
                     }
                 ).unwrap_or(UriTemplateEscaping::U);
 
-                let values: Vec<String> = variables.iter().map(|v| {
+                let values: Vec<String> = variables.iter().filter_map(|v| {
                     match v {
                         &UriTemplateVariable::Simple(ref name) => {
                             let strings: Vec<String> = values.strings_for_name(name);
                             let strings: Vec<String> = strings.into_iter().map(|s| escape_string(escaping, s.as_slice())).collect();
-                            strings.connect(",")
+                            if strings.len() > 0 {
+                                Some(strings)
+                            } else {
+                                None
+                            }
                         }
                         &UriTemplateVariable::Prefix(ref name, prefix_len) => {
                             let strings: Vec<String> = values.strings_for_name(name).into_iter().map(|s| {
@@ -211,12 +209,20 @@ impl UriTemplateComponent {
                                 strings.concat()
                             }).collect();
                             let strings: Vec<String> = strings.into_iter().map(|s| escape_string(escaping, s.as_slice())).collect();
-                            strings.connect(",")
+                            if strings.len() > 0 {
+                                Some(strings)
+                            } else {
+                                None
+                            }
                         }
                         &UriTemplateVariable::Explode(ref name) => {
                             let strings: Vec<String> = values.strings_for_name(name);
                             let strings: Vec<String> = strings.into_iter().map(|s| escape_string(escaping, s.as_slice())).collect();
-                            strings.connect(separator)
+                            if strings.len() > 0 {
+                                Some(strings)
+                            } else {
+                                None
+                            }
                         }
                         &UriTemplateVariable::ExplodePrefix(ref name, prefix_len) => {
                             let strings: Vec<String> = values.strings_for_name(name).into_iter().map(|s| {
@@ -224,9 +230,20 @@ impl UriTemplateComponent {
                                 strings.concat()
                             }).collect();
                             let strings: Vec<String> = strings.into_iter().map(|s| escape_string(escaping, s.as_slice())).collect();
-                            strings.connect(separator)
+                            if strings.len() > 0 {
+                                Some(strings)
+                            } else {
+                                None
+                            }
                         }
-                    }
+                    }.map(|strings|
+                        match v {
+                            &UriTemplateVariable::Simple(_) => strings.connect(","),
+                            &UriTemplateVariable::Prefix(_, _) => strings.connect(","),
+                            &UriTemplateVariable::Explode(_) => strings.connect(separator),
+                            &UriTemplateVariable::ExplodePrefix(_, _) => strings.connect(separator),
+                        }
+                    )
                 }).collect();
 
                 if values.len() == 0 {
@@ -245,22 +262,6 @@ pub struct UriTemplate {
 }
 
 impl UriTemplate {
-    // pub fn from_str(template_: &'a str) -> Result<UriTemplate, Error> {
-    //     let template = template_.to_owned();
-    //     let slice = template.as_slice();
-    //     let mut components = Vec::<UriTemplateComponent<'a>>::new();
-    //
-    //     // let chars = template.as_slice().chars();
-    //     // loop {
-    //     //     let component =
-    //     // }
-    //
-    //     Ok(UriTemplate{
-    //         template: template,
-    //         components: components,
-    //     })
-    // }
-
     pub fn from_components(components: Vec<UriTemplateComponent>) -> UriTemplate {
         UriTemplate {
             components: components,
@@ -324,7 +325,7 @@ impl UriTemplateValues {
     }
 
     pub fn set_string(&mut self, name: &str, value: &str) -> &mut UriTemplateValues {
-        self.values.insert(name.to_string(), UriTemplateValue::String(value.to_string()));
+        self.values.insert(name.to_string(), value.parse().unwrap());
         self
     }
 
