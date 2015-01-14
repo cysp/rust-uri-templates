@@ -67,7 +67,7 @@ enum UriTemplateEscaping {
 
 fn escape_string(method: UriTemplateEscaping, input: &str) -> String {
     let str_u = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~";
-    let str_ur = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~:/?#[]@!$&'()*+,;=%";
+    let str_ur = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~:/?#[]@!$&'()*+,;=";
 
     let mut set_u = BitvSet::new();
     for b in str_u.as_bytes().iter() {
