@@ -5,7 +5,7 @@ use std::collections::BitvSet;
 use std::collections::HashMap;
 
 
-#[deriving(Copy)]
+#[derive(Copy)]
 pub enum UriTemplateOperator {
     ReservedCharacter,
     Fragment,
@@ -24,7 +24,7 @@ pub enum UriTemplateVariable {
     ExplodePrefix(String, u32),
 }
 
-#[deriving(Copy)]
+#[derive(Copy)]
 pub enum UriTemplateModifier {
     Prefix(u32),
     Explode,
@@ -58,7 +58,7 @@ pub enum UriTemplateComponent {
     Variable(Option<UriTemplateOperator>, Vec<UriTemplateVariable>),
 }
 
-#[deriving(Copy)]
+#[derive(Copy)]
 enum UriTemplateEscaping {
     U,
     UR,
@@ -71,13 +71,13 @@ fn escape_string(method: UriTemplateEscaping, input: &str) -> String {
 
     let mut set_u = BitvSet::new();
     for b in str_u.as_bytes().iter() {
-        set_u.insert(*b as uint);
+        set_u.insert(*b as usize);
     }
     let set_u = set_u;
 
     let mut set_ur = BitvSet::new();
     for b in str_ur.as_bytes().iter() {
-        set_ur.insert(*b as uint);
+        set_ur.insert(*b as usize);
     }
     let set_ur = set_ur;
 
@@ -85,14 +85,14 @@ fn escape_string(method: UriTemplateEscaping, input: &str) -> String {
     for byte in input.as_bytes().iter() {
         match method {
             UriTemplateEscaping::U => {
-                if set_u.contains(&(*byte as uint)) {
+                if set_u.contains(&(*byte as usize)) {
                     s.push(*byte as char);
                 } else {
                     s.push_str(format!("%{:02X}", *byte).as_slice())
                 }
             }
             UriTemplateEscaping::UR => {
-                if set_ur.contains(&(*byte as uint)) {
+                if set_ur.contains(&(*byte as usize)) {
                     s.push(*byte as char);
                 } else {
                     s.push_str(format!("%{:02X}", *byte).as_slice())
@@ -157,7 +157,7 @@ impl UriTemplateComponent {
             return strings;
         }
         strings.into_iter().map(|s| {
-            let strings: Vec<String> = s.as_slice().graphemes(true).take(prefix_len as uint).map(|s| s.to_string()).collect();
+            let strings: Vec<String> = s.as_slice().graphemes(true).take(prefix_len as usize).map(|s| s.to_string()).collect();
             strings.concat()
         }).collect()
     }
