@@ -1,7 +1,7 @@
 extern crate std;
 
 use std::vec::Vec;
-use std::collections::BitvSet;
+use std::collections::BitSet;
 use std::collections::HashMap;
 
 
@@ -69,13 +69,13 @@ fn escape_string(method: UriTemplateEscaping, input: &str) -> String {
     let str_u = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~";
     let str_ur = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~:/?#[]@!$&'()*+,;=";
 
-    let mut set_u = BitvSet::new();
+    let mut set_u = BitSet::new();
     for b in str_u.as_bytes().iter() {
         set_u.insert(*b as usize);
     }
     let set_u = set_u;
 
-    let mut set_ur = BitvSet::new();
+    let mut set_ur = BitSet::new();
     for b in str_ur.as_bytes().iter() {
         set_ur.insert(*b as usize);
     }
@@ -343,7 +343,7 @@ impl UriTemplate {
     }
 }
 
-impl std::fmt::Show for UriTemplate {
+impl std::fmt::Debug for UriTemplate {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
         f.pad(self.to_template_string().as_slice())
     }
@@ -356,8 +356,9 @@ pub enum UriTemplateValue {
 }
 
 impl std::str::FromStr for UriTemplateValue {
-    fn from_str(s: &str) -> Option<Self> {
-        Some(UriTemplateValue::String(s.to_string()))
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, ()> {
+        Ok(UriTemplateValue::String(s.to_string()))
     }
 }
 

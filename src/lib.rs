@@ -1,3 +1,5 @@
+#![feature(collections)]
+
 pub use types::{UriTemplate, UriTemplateOperator, UriTemplateModifier};
 pub use types::{UriTemplateValues, UriTemplateValue};
 pub use building::{UriTemplateBuilder, UriTemplateComponentBuilder};
