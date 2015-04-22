@@ -1,11 +1,13 @@
 extern crate std;
 
 use std::vec::Vec;
-use std::collections::BitSet;
-use std::collections::HashMap;
+use std::collections::{
+    HashMap,
+    HashSet,
+};
 
 
-#[derive(Copy)]
+#[derive(Copy,Clone,PartialEq,Eq)]
 pub enum UriTemplateOperator {
     ReservedCharacter,
     Fragment,
@@ -17,6 +19,7 @@ pub enum UriTemplateOperator {
 }
 
 
+#[derive(Clone,PartialEq,Eq)]
 pub enum UriTemplateVariable {
     Simple(String),
     Prefix(String, u32),
@@ -24,7 +27,7 @@ pub enum UriTemplateVariable {
     ExplodePrefix(String, u32),
 }
 
-#[derive(Copy)]
+#[derive(Copy,Clone,PartialEq,Eq)]
 pub enum UriTemplateModifier {
     Prefix(u32),
     Explode,
@@ -53,12 +56,13 @@ impl UriTemplateVariable {
 }
 
 
+#[derive(Clone,PartialEq,Eq)]
 pub enum UriTemplateComponent {
     Literal(String),
     Variable(Option<UriTemplateOperator>, Vec<UriTemplateVariable>),
 }
 
-#[derive(Copy)]
+#[derive(Copy,Clone,PartialEq,Eq)]
 enum UriTemplateEscaping {
     U,
     UR,
@@ -69,15 +73,15 @@ fn escape_string(method: UriTemplateEscaping, input: &str) -> String {
     let str_u = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~";
     let str_ur = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~:/?#[]@!$&'()*+,;=";
 
-    let mut set_u = BitSet::new();
+    let mut set_u: HashSet<u8> = HashSet::new();
     for b in str_u.as_bytes().iter() {
-        set_u.insert(*b as usize);
+        set_u.insert(*b);
     }
     let set_u = set_u;
 
-    let mut set_ur = BitSet::new();
+    let mut set_ur: HashSet<u8> = HashSet::new();
     for b in str_ur.as_bytes().iter() {
-        set_ur.insert(*b as usize);
+        set_ur.insert(*b);
     }
     let set_ur = set_ur;
 
@@ -85,17 +89,17 @@ fn escape_string(method: UriTemplateEscaping, input: &str) -> String {
     for byte in input.as_bytes().iter() {
         match method {
             UriTemplateEscaping::U => {
-                if set_u.contains(&(*byte as usize)) {
+                if set_u.contains(&(*byte)) {
                     s.push(*byte as char);
                 } else {
-                    s.push_str(format!("%{:02X}", *byte).as_slice())
+                    s.push_str(&(format!("%{:02X}", *byte)))
                 }
             }
             UriTemplateEscaping::UR => {
-                if set_ur.contains(&(*byte as usize)) {
+                if set_ur.contains(&(*byte)) {
                     s.push(*byte as char);
                 } else {
-                    s.push_str(format!("%{:02X}", *byte).as_slice())
+                    s.push_str(&(format!("%{:02X}", *byte)))
                 }
             }
         }
@@ -157,8 +161,7 @@ impl UriTemplateComponent {
             return strings;
         }
         strings.into_iter().map(|s| {
-            let strings: Vec<String> = s.as_slice().graphemes(true).take(prefix_len as usize).map(|s| s.to_string()).collect();
-            strings.concat()
+            s.chars().take(prefix_len as usize).collect()
         }).collect()
     }
 
@@ -167,13 +170,13 @@ impl UriTemplateComponent {
             return strings;
         }
         strings.into_iter().map(|s|
-            escape_string(escaping, s.as_slice())
+            escape_string(escaping, s.as_ref())
         ).collect()
     }
 
     pub fn to_string_with_values(&self, values: &UriTemplateValues) -> String {
         match self {
-            &UriTemplateComponent::Literal(ref value) => escape_string(UriTemplateEscaping::UR, value.as_slice()),
+            &UriTemplateComponent::Literal(ref value) => escape_string(UriTemplateEscaping::UR, value.as_ref()),
             &UriTemplateComponent::Variable(operator, ref variables) => {
                 let prefix: &'static str = operator.map(|o|
                     match o {
@@ -310,6 +313,7 @@ impl UriTemplateComponent {
 }
 
 
+#[derive(Clone,PartialEq,Eq)]
 pub struct UriTemplate {
     components: Vec<UriTemplateComponent>,
 }
@@ -345,7 +349,7 @@ impl UriTemplate {
 
 impl std::fmt::Debug for UriTemplate {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
-        f.pad(self.to_template_string().as_slice())
+        f.pad(self.to_template_string().as_ref())
     }
 }
 
