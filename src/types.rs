@@ -6,6 +6,8 @@ use std::collections::{
     HashSet,
 };
 
+use building;
+
 
 #[derive(Copy,Clone,PartialEq,Eq)]
 pub enum UriTemplateOperator {
@@ -319,6 +321,10 @@ pub struct UriTemplate {
 }
 
 impl UriTemplate {
+    pub fn builder() -> building::UriTemplateBuilder {
+        building::UriTemplateBuilder::new()
+    }
+
     pub fn from_components(components: Vec<UriTemplateComponent>) -> UriTemplate {
         UriTemplate {
             components: components,

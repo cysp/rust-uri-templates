@@ -4,4 +4,3 @@ pub use building::{UriTemplateBuilder, UriTemplateComponentBuilder};
 
 mod types;
 mod building;
-mod parsing;
