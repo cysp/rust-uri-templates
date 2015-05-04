@@ -372,6 +372,39 @@ impl std::str::FromStr for UriTemplateValue {
     }
 }
 
+impl<'a> From<&'a str> for UriTemplateValue {
+    fn from(s: &'a str) -> UriTemplateValue {
+        UriTemplateValue::String(s.to_owned())
+    }
+}
+
+impl From<String> for UriTemplateValue {
+    fn from(s: String) -> UriTemplateValue {
+        UriTemplateValue::String(s)
+    }
+}
+
+impl<'a, 'b> From<&'a [&'b str]> for UriTemplateValue {
+    fn from(l: &'a [&'b str]) -> UriTemplateValue {
+        let v: Vec<String> = l.iter().map(|s: &&str| (*s).to_owned()).collect();
+        UriTemplateValue::List(v)
+    }
+}
+
+impl<'a> From<Vec<&'a str>> for UriTemplateValue {
+    fn from(v: Vec<&'a str>) -> UriTemplateValue {
+        let v: Vec<String> = v.iter().map(|s: &&str| (*s).to_owned()).collect();
+        UriTemplateValue::List(v)
+    }
+}
+
+impl From<Vec<String>> for UriTemplateValue {
+    fn from(v: Vec<String>) -> UriTemplateValue {
+        UriTemplateValue::List(v)
+    }
+}
+
+
 pub struct UriTemplateValues {
     values: HashMap<String, UriTemplateValue>,
 }
@@ -383,18 +416,8 @@ impl UriTemplateValues {
         }
     }
 
-    pub fn set(&mut self, name: &str, value: UriTemplateValue) -> &mut UriTemplateValues {
-        self.values.insert(name.to_string(), value);
-        self
-    }
-
-    pub fn set_string(&mut self, name: &str, value: &str) -> &mut UriTemplateValues {
-        self.values.insert(name.to_string(), value.parse().unwrap());
-        self
-    }
-
-    pub fn set_strings(&mut self, name: &str, value: Vec<&str>) -> &mut UriTemplateValues {
-        self.values.insert(name.to_string(), UriTemplateValue::List(value.iter().map(|s| s.to_string()).collect()));
+    pub fn set<T: Into<UriTemplateValue>>(&mut self, name: &str, value: T) -> &mut UriTemplateValues {
+        self.values.insert(name.to_string(), value.into());
         self
     }
 
@@ -404,7 +427,7 @@ impl UriTemplateValues {
                 &UriTemplateValue::String(ref string) => vec!(string.clone()),
                 &UriTemplateValue::List(ref strings) => strings.clone(),
             }
-        }).unwrap_or(vec!())
+        }).unwrap_or(Vec::new())
     }
 }
 
@@ -416,8 +439,21 @@ mod test_values {
     #[test]
     fn test_values_1() {
         let mut v = UriTemplateValues::new();
-        v.set("foo", "bar".parse().unwrap());
-        v.set_string("foo", "baz");
+        v.set("foo", "bar");
+        v.set("foo", ["bar", "baz"].as_ref());
+        v.set("foo", "baz");
+    }
+
+    #[test]
+    fn test_values_2() {
+        let mut v = UriTemplateValues::new();
+        v.set("foo", "baz");
+    }
+
+    #[test]
+    fn test_values_3() {
+        let mut v = UriTemplateValues::new();
+        v.set("foo", "baz");
     }
 }
 
@@ -449,7 +485,7 @@ mod test_expanding {
         .into_uri_template();
 
         let mut v = UriTemplateValues::new();
-        v.set_string("foo", "bar");
+        v.set("foo", "bar");
 
         let s = t.to_template_string();
         assert_eq!(s, "http://example.com/{foo}");
@@ -469,8 +505,8 @@ mod test_expanding {
         .into_uri_template();
 
         let mut v = UriTemplateValues::new();
-        v.set_string("foo", "bar");
-        v.set_string("bar", "baz");
+        v.set("foo", "bar");
+        v.set("bar", "baz");
 
         let s = t.to_template_string();
         assert_eq!(s, "http://example.com/{foo,bar}");

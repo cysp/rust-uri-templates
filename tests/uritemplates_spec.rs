@@ -7,8 +7,8 @@ use uritemplates::{UriTemplateValues};
 
 fn test_level_1_values() -> UriTemplateValues {
     let mut v = UriTemplateValues::new();
-    v.set_string("var", "value");
-    v.set_string("hello", "Hello World!");
+    v.set("var", "value");
+    v.set("hello", "Hello World!");
     v
 }
 
@@ -37,9 +37,9 @@ fn test_level_1_b() {
 
 fn test_level_2_values() -> UriTemplateValues {
     let mut v = UriTemplateValues::new();
-    v.set_string("var", "value");
-    v.set_string("hello", "Hello World!");
-    v.set_string("path", "/foo/bar");
+    v.set("var", "value");
+    v.set("hello", "Hello World!");
+    v.set("path", "/foo/bar");
     v
 }
 
@@ -92,12 +92,12 @@ fn test_level_2_d() {
 
 fn test_level_3_values() -> UriTemplateValues {
     let mut v = UriTemplateValues::new();
-    v.set_string("var", "value");
-    v.set_string("hello", "Hello World!");
-    v.set_string("empty", "");
-    v.set_string("path", "/foo/bar");
-    v.set_string("x", "1024");
-    v.set_string("y", "768");
+    v.set("var", "value");
+    v.set("hello", "Hello World!");
+    v.set("empty", "");
+    v.set("path", "/foo/bar");
+    v.set("x", "1024");
+    v.set("y", "768");
     v
 }
 
@@ -338,14 +338,14 @@ fn test_level_3_p() {
 
 fn test_level_4_values() -> UriTemplateValues {
     let mut v = UriTemplateValues::new();
-    v.set_string("var", "value");
-    v.set_string("hello", "Hello World!");
-    v.set_string("path", "/foo/bar");
-    v.set_strings("list", vec!["red", "green", "blue"]);
+    v.set("var", "value");
+    v.set("hello", "Hello World!");
+    v.set("path", "/foo/bar");
+    v.set("list", ["red", "green", "blue"].as_ref());
     // v.set_assoc("keys", {"semi": ";", "dot": ".", "comma": ","});
-    v.set_string("empty", "");
-    v.set_string("x", "1024");
-    v.set_string("y", "768");
+    v.set("empty", "");
+    v.set("x", "1024");
+    v.set("y", "768");
     v
 }
 

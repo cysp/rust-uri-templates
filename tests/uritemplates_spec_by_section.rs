@@ -7,22 +7,22 @@ use uritemplates::{UriTemplateValues};
 
 fn test_values() -> UriTemplateValues {
     let mut v = UriTemplateValues::new();
-    v.set_strings("count", vec!["one", "two", "three"]);
-    v.set_strings("dom", vec!["example", "com"]);
-    v.set_string("dub", "me/too");
-    v.set_string("hello", "Hello World!");
-    v.set_string("half", "50%");
-    v.set_string("var", "value");
-    v.set_string("who", "fred");
-    v.set_string("base", "http://example.com/home/");
-    v.set_string("path", "/foo/bar");
-    v.set_strings("list", vec!["red", "green", "blue"]);
+    v.set("count", ["one", "two", "three"].as_ref());
+    v.set("dom", ["example", "com"].as_ref());
+    v.set("dub", "me/too");
+    v.set("hello", "Hello World!");
+    v.set("half", "50%");
+    v.set("var", "value");
+    v.set("who", "fred");
+    v.set("base", "http://example.com/home/");
+    v.set("path", "/foo/bar");
+    v.set("list", ["red", "green", "blue"].as_ref());
     // "keys"       : { "semi" : ";", "dot" : ".", "comma" : ","},
-    v.set_string("v", "6");
-    v.set_string("x", "1024");
-    v.set_string("y", "768");
-    v.set_string("empty", "");
-    v.set_strings("empty_keys", vec![]);
+    v.set("v", "6");
+    v.set("x", "1024");
+    v.set("y", "768");
+    v.set("empty", "");
+    v.set("empty_keys", [].as_ref());
     v
 }
 
