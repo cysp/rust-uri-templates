@@ -345,13 +345,6 @@ pub enum UriTemplateValue {
     List(Vec<String>),
 }
 
-impl std::str::FromStr for UriTemplateValue {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, ()> {
-        Ok(UriTemplateValue::String(s.to_string()))
-    }
-}
-
 impl<'a> From<&'a str> for UriTemplateValue {
     fn from(s: &'a str) -> UriTemplateValue {
         UriTemplateValue::String(s.to_owned())
@@ -367,13 +360,6 @@ impl From<String> for UriTemplateValue {
 impl<'a, 'b> From<&'a [&'b str]> for UriTemplateValue {
     fn from(l: &'a [&'b str]) -> UriTemplateValue {
         let v: Vec<String> = l.iter().map(|s: &&str| (*s).to_owned()).collect();
-        UriTemplateValue::List(v)
-    }
-}
-
-impl<'a> From<Vec<&'a str>> for UriTemplateValue {
-    fn from(v: Vec<&'a str>) -> UriTemplateValue {
-        let v: Vec<String> = v.iter().map(|s: &&str| (*s).to_owned()).collect();
         UriTemplateValue::List(v)
     }
 }

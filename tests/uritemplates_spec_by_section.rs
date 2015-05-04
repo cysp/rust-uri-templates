@@ -22,7 +22,7 @@ fn test_values() -> UriTemplateValues {
     v.set("x", "1024");
     v.set("y", "768");
     v.set("empty", "");
-    v.set("empty_keys", [].as_ref());
+    v.set("empty_keys", Vec::new());
     v
 }
 
