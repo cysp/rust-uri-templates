@@ -22,11 +22,10 @@ pub enum UriTemplateOperator {
 
 
 #[derive(Clone,PartialEq,Eq)]
-pub enum UriTemplateVariable {
-    Simple(String),
-    Prefix(String, u32),
-    Explode(String),
-    ExplodePrefix(String, u32),
+pub struct UriTemplateVariable {
+    name: String,
+    explode: bool,
+    prefix: Option<u32>,
 }
 
 #[derive(Copy,Clone,PartialEq,Eq)]
@@ -38,21 +37,37 @@ pub enum UriTemplateModifier {
 
 
 impl UriTemplateVariable {
+    pub fn new_simple(name: String) -> UriTemplateVariable {
+        UriTemplateVariable{ name: name, prefix: None, explode: false }
+    }
+
+    pub fn new_prefix(name: String, prefix: u32) -> UriTemplateVariable {
+        UriTemplateVariable{ name: name, prefix: Some(prefix), explode: false }
+    }
+
+    pub fn new_explode(name: String) -> UriTemplateVariable {
+        UriTemplateVariable{ name: name, prefix: None, explode: true }
+    }
+
+    pub fn new_explode_prefix(name: String, prefix: u32) -> UriTemplateVariable {
+        UriTemplateVariable{ name: name, prefix: Some(prefix), explode: true }
+    }
+
     pub fn into_template_string(self) -> String {
         match self {
-            UriTemplateVariable::Simple(name) => name,
-            UriTemplateVariable::Prefix(name, prefix) => format!("{}:{}", name, prefix),
-            UriTemplateVariable::Explode(name) => format!("{}*", name),
-            UriTemplateVariable::ExplodePrefix(name, prefix) => format!("{}*:{}", name, prefix),
+            UriTemplateVariable{ name, prefix: None, explode: false } => name,
+            UriTemplateVariable{ name, prefix: Some(prefix), explode: false } => format!("{}:{}", name, prefix),
+            UriTemplateVariable{ name, prefix: None, explode: true } => format!("{}*", name),
+            UriTemplateVariable{ name, prefix: Some(prefix), explode: true } => format!("{}*:{}", name, prefix),
         }
     }
 
     pub fn to_template_string(&self) -> String {
         match self {
-            &UriTemplateVariable::Simple(ref name) => name.clone(),
-            &UriTemplateVariable::Prefix(ref name, prefix) => format!("{}:{}", name, prefix),
-            &UriTemplateVariable::Explode(ref name) => format!("{}*", name),
-            &UriTemplateVariable::ExplodePrefix(ref name, prefix) => format!("{}*:{}", name, prefix),
+            &UriTemplateVariable{ ref name, prefix: None, explode: false } => name.clone(),
+            &UriTemplateVariable{ ref name, prefix: Some(prefix), explode: false } => format!("{}:{}", name, prefix),
+            &UriTemplateVariable{ ref name, prefix: None, explode: true } => format!("{}*", name),
+            &UriTemplateVariable{ ref name, prefix: Some(prefix), explode: true } => format!("{}*:{}", name, prefix),
         }
     }
 }
@@ -242,20 +257,11 @@ impl UriTemplateComponent {
 
                 let values: Vec<String> = variables.iter().filter_map(|v| {
                     let values: Vec<String> = match v {
-                        &UriTemplateVariable::Simple(ref name) => {
-                            let strings: Vec<String> = values.strings_for_name(name);
-                            UriTemplateComponent::strings_apply_escaping(strings, escaping)
-                        }
-                        &UriTemplateVariable::Prefix(ref name, prefix_len) => {
-                            let strings: Vec<String> = UriTemplateComponent::strings_apply_prefix(values.strings_for_name(name), prefix_len);
-                            UriTemplateComponent::strings_apply_escaping(strings, escaping)
-                        }
-                        &UriTemplateVariable::Explode(ref name) => {
-                            let strings: Vec<String> = values.strings_for_name(name);
-                            UriTemplateComponent::strings_apply_escaping(strings, escaping)
-                        }
-                        &UriTemplateVariable::ExplodePrefix(ref name, prefix_len) => {
-                            let strings: Vec<String> = UriTemplateComponent::strings_apply_prefix(values.strings_for_name(name), prefix_len);
+                        &UriTemplateVariable{ ref name, prefix, explode: _ } => {
+                            let mut strings: Vec<String> = values.strings_for_name(name);
+                            if let Some(prefix) = prefix {
+                                strings = UriTemplateComponent::strings_apply_prefix(strings, prefix);
+                            }
                             UriTemplateComponent::strings_apply_escaping(strings, escaping)
                         }
                     };
@@ -263,7 +269,7 @@ impl UriTemplateComponent {
                         return None;
                     }
                     Some(match v {
-                        &UriTemplateVariable::Simple(ref name) => {
+                        &UriTemplateVariable{ ref name, prefix: _, explode: false } => {
                             let mut value = values.connect(",");
                             if include_name {
                                 if value.len() != 0 || include_equals_when_empty {
@@ -274,26 +280,7 @@ impl UriTemplateComponent {
                             }
                             value
                         },
-                        &UriTemplateVariable::Prefix(ref name, _) => {
-                            let mut value = values.connect(",");
-                            if include_name {
-                                if value.len() != 0 || include_equals_when_empty {
-                                    value = format!("{}={}", name, value);
-                                } else {
-                                    value = name.clone();
-                                }
-                            }
-                            value
-                        },
-                        &UriTemplateVariable::Explode(ref name) => {
-                            if include_name {
-                                let strings: Vec<String> = values.into_iter().map(|s| { format!("{}={}", name, s) }).collect();
-                                strings.connect(separator)
-                            } else {
-                                values.connect(separator)
-                            }
-                        },
-                        &UriTemplateVariable::ExplodePrefix(ref name, _) => {
+                        &UriTemplateVariable{ ref name, prefix: _, explode: true } => {
                             if include_name {
                                 let strings: Vec<String> = values.into_iter().map(|s| { format!("{}={}", name, s) }).collect();
                                 strings.connect(separator)

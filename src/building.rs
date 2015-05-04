@@ -44,10 +44,10 @@ pub struct UriTemplateComponentBuilder {
 impl UriTemplateComponentBuilder {
     pub fn variable(mut self, name: &str, modifier: Option<UriTemplateModifier>) -> UriTemplateComponentBuilder {
         self.variables.push(match modifier {
-            None => UriTemplateVariable::Simple(name.to_string()),
-            Some(UriTemplateModifier::Prefix(prefix)) => UriTemplateVariable::Prefix(name.to_string(), prefix),
-            Some(UriTemplateModifier::Explode) => UriTemplateVariable::Explode(name.to_string()),
-            Some(UriTemplateModifier::ExplodePrefix(prefix)) => UriTemplateVariable::ExplodePrefix(name.to_string(), prefix)
+            None => UriTemplateVariable::new_simple(name.to_string()),
+            Some(UriTemplateModifier::Prefix(prefix)) => UriTemplateVariable::new_prefix(name.to_string(), prefix),
+            Some(UriTemplateModifier::Explode) => UriTemplateVariable::new_explode(name.to_string()),
+            Some(UriTemplateModifier::ExplodePrefix(prefix)) => UriTemplateVariable::new_explode_prefix(name.to_string(), prefix)
         });
         self
     }
