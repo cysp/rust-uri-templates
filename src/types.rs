@@ -382,8 +382,11 @@ impl UriTemplateValues {
         }
     }
 
-    pub fn set<T: Into<UriTemplateValue>>(&mut self, name: &str, value: T) -> &mut UriTemplateValues {
-        self.values.insert(name.to_string(), value.into());
+    pub fn set<N, V>(&mut self, name: N, value: V) -> &mut UriTemplateValues
+        where N: Into<String>,
+              V: Into<UriTemplateValue>
+    {
+        self.values.insert(name.into(), value.into());
         self
     }
 
