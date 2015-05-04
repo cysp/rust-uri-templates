@@ -18,7 +18,9 @@ impl UriTemplateBuilder {
         self
     }
 
-    pub fn component<F: Fn(UriTemplateComponentBuilder) -> UriTemplateComponentBuilder>(mut self, operator: Option<UriTemplateOperator>, f: F) -> UriTemplateBuilder {
+    pub fn component<F>(mut self, operator: Option<UriTemplateOperator>, f: F) -> UriTemplateBuilder
+        where F: FnOnce(UriTemplateComponentBuilder) -> UriTemplateComponentBuilder
+    {
         let c = UriTemplateComponentBuilder {
             variables: vec!(),
         };
