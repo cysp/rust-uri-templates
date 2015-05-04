@@ -28,13 +28,6 @@ pub struct UriTemplateVariable {
     prefix: Option<u32>,
 }
 
-#[derive(Copy,Clone,PartialEq,Eq)]
-pub enum UriTemplateModifier {
-    Prefix(u32),
-    Explode,
-    ExplodePrefix(u32),
-}
-
 
 impl UriTemplateVariable {
     pub fn new_simple(name: String) -> UriTemplateVariable {

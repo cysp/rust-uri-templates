@@ -1,5 +1,5 @@
 use std::vec::Vec;
-use super::types::{UriTemplate, UriTemplateComponent, UriTemplateOperator, UriTemplateVariable, UriTemplateModifier};
+use super::types::{UriTemplate, UriTemplateComponent, UriTemplateOperator, UriTemplateVariable};
 
 
 pub struct UriTemplateBuilder {
@@ -36,6 +36,13 @@ impl UriTemplateBuilder {
     }
 }
 
+
+#[derive(Copy,Clone,PartialEq,Eq)]
+pub enum UriTemplateModifier {
+    Prefix(u32),
+    Explode,
+    ExplodePrefix(u32),
+}
 
 pub struct UriTemplateComponentBuilder {
     variables: Vec<UriTemplateVariable>,
