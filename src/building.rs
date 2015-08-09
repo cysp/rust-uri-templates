@@ -2,6 +2,7 @@ use std::vec::Vec;
 use super::types::{UriTemplate, UriTemplateComponent, UriTemplateOperator, UriTemplateVariable};
 
 
+#[derive(Clone,PartialEq,Eq)]
 pub struct UriTemplateBuilder {
     components: Vec<UriTemplateComponent>,
 }
