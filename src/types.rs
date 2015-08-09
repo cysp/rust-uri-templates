@@ -137,7 +137,7 @@ impl UriTemplateComponent {
                         UriTemplateOperator::QueryContinuation => "&",
                     }
                 ).unwrap_or("");
-                format!("{{{}{}}}", operator, varspecs.connect(","))
+                format!("{{{}{}}}", operator, varspecs.join(","))
             },
         }
     }
@@ -161,7 +161,7 @@ impl UriTemplateComponent {
                         UriTemplateOperator::QueryContinuation => "&",
                     }
                 ).unwrap_or("");
-                format!("{{{}{}}}", operator, varspecs.connect(","))
+                format!("{{{}{}}}", operator, varspecs.join(","))
             },
         }
     }
@@ -263,7 +263,7 @@ impl UriTemplateComponent {
                     }
                     Some(match v {
                         &UriTemplateVariable{ ref name, prefix: _, explode: false } => {
-                            let mut value = values.connect(",");
+                            let mut value = values.join(",");
                             if include_name {
                                 if value.len() != 0 || include_equals_when_empty {
                                     value = format!("{}={}", name, value);
@@ -276,9 +276,9 @@ impl UriTemplateComponent {
                         &UriTemplateVariable{ ref name, prefix: _, explode: true } => {
                             if include_name {
                                 let strings: Vec<String> = values.into_iter().map(|s| { format!("{}={}", name, s) }).collect();
-                                strings.connect(separator)
+                                strings.join(separator)
                             } else {
-                                values.connect(separator)
+                                values.join(separator)
                             }
                         },
                     })
@@ -287,7 +287,7 @@ impl UriTemplateComponent {
                 if values.len() == 0 {
                     "".to_string()
                 } else {
-                    format!("{}{}", prefix, values.connect(separator))
+                    format!("{}{}", prefix, values.join(separator))
                 }
             },
         }
