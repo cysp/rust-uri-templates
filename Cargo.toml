@@ -2,3 +2,6 @@
 name = "uritemplates"
 version = "0.0.1"
 authors = ["Scott Talbot <s@chikachow.org>"]
+
+[dependencies]
+automaton = { git = "git://github.com/carllerche/automaton.git" }
